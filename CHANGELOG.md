@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.1...v1.0.2) (2025-02-10)
+
+
+### Bug Fixes
+
+* Use LitMotion ([03539d6](https://github.com/Unity-UPM-Packages/Unity-UI/commit/03539d66500172ecd1fe0fdf338a48e0655f7725))
+
 ## [1.0.1](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.0...v1.0.1) (2025-02-10)
 
 
