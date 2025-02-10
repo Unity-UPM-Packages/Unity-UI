@@ -1,7 +1,9 @@
 {
     "name": "com.thelegends.unity.ui",
     "rootNamespace": "com.thelegends.unity.ui",
-    "references": [],
+    "references": [
+        "GUID:ca6a523685bd9894d8ba58c9c40c8373"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
