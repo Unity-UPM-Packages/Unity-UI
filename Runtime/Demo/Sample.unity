@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 32774226}
   - component: {fileID: 32774225}
   - component: {fileID: 32774224}
+  - component: {fileID: 32774228}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -224,6 +225,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &32774228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32774223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d99f2edc7fa4fc5438d29dfaea2173c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  img: {fileID: 0}
 --- !u!1 &101591364
 GameObject:
   m_ObjectHideFlags: 0
@@ -491,6 +505,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 32774227}
     m_Modifications:
+    - target: {fileID: 462369871738470588, guid: 3087846a2da90504fae9444cc8e15288, type: 3}
+      propertyPath: a
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 2535336138405925314, guid: 3087846a2da90504fae9444cc8e15288, type: 3}
       propertyPath: m_Name
       value: UILoading
