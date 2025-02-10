@@ -18,6 +18,5 @@
     "url": "https://github.com/Unity-UPM-Packages"
   },
   "dependencies": {
-    "com.unity.ugui": "1.0.0"
   }
 }
