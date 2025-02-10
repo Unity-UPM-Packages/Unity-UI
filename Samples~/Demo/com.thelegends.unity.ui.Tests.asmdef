@@ -1,0 +1,16 @@
+{
+    "name": "com.thelegends.unity.ui.Demo",
+    "rootNamespace": "com.thelegends.unity.ui.Demo",
+    "references": [
+        "com.thelegends.unity.ui"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
