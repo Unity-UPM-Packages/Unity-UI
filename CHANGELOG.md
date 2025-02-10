@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.0...v1.0.1) (2025-02-10)
+
+
+### Bug Fixes
+
+* edit dependencies ([103d80b](https://github.com/Unity-UPM-Packages/Unity-UI/commit/103d80b15753cb16fa28ef294f73029b76957461))
+
 # 1.0.0 (2025-02-10)
 
 
