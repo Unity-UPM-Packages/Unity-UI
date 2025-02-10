@@ -1,7 +1,7 @@
 {
   "name": "com.thelegends.unity.ui",
-  "displayName": "Unity UI",
-  "description": "Unity UI use with Unity3D",
+  "displayName": "Unity UIs",
+  "description": "Unity UIs use with Unity3D",
   "keywords": [],
   "version": "1.0.0",
   "unity": "2022.3",
