@@ -1,0 +1,23 @@
+{
+  "name": "com.thelegends.unity.ui",
+  "displayName": "Unity UI",
+  "description": "Unity UI use with Unity3D",
+  "keywords": [],
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "documentationUrl": "https://github.com/Unity-UPM-Packages/Unity-UI#documentation",
+  "changelogUrl": "https://github.com/Unity-UPM-Packages/Unity-UI/releases",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "repository": "https://github.com/Unity-UPM-Packages/Unity-UI.git",
+    "url": "https://github.com/Unity-UPM-Packages/Unity-UI.git"
+  },
+  "author": {
+    "name": "Unity-UPM-Packages",
+    "url": "https://github.com/Unity-UPM-Packages"
+  },
+  "dependencies": {
+    "com.unity.modules.ui": "1.0.0"
+  }
+}
