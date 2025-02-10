@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using LitMotion;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
 namespace TheLegends.Base.UI
 {
@@ -31,13 +31,15 @@ namespace TheLegends.Base.UI
         private int statusSuffixIndex = 0;
         private string statusSuffixString = ".";
 
+        private MotionHandle _handle;
+
         protected static UILoadingController instance = null;
 
         private void Awake()
         {
             instance = this;
             instance.container.SetActive(false);
-            instance.fillImg.fillAmount = 0;
+
         }
 
         public static void Show(float time, Action onComplete = null)
@@ -46,7 +48,10 @@ namespace TheLegends.Base.UI
             instance.backgroundImg.sprite = instance.backgroundSprites[instance.spriteIndex];
             instance.spriteIndex++;
 
+            instance.fillImg.fillAmount = 0;
+
             instance.container.SetActive(true);
+
             FillLoadingProgressBar(1, time, () =>
             {
                 onComplete?.Invoke();
@@ -57,43 +62,54 @@ namespace TheLegends.Base.UI
         public static void SetProgress(float percent, Action onComplete = null)
         {
             instance.container.SetActive(true);
-            FillLoadingProgressBar(percent, percent, onComplete);
+            FillLoadingProgressBar(percent, 1, onComplete);
         }
 
         private static void FillLoadingProgressBar(float value, float time, Action onComplete = null)
         {
-            instance.fillImg.DOKill();
-            instance.fillImg.DOFillAmount(value, time).OnComplete(() =>
-            {
-                onComplete?.Invoke();
-            }).OnStart(() =>
-            {
-                instance.eslapseTime = 0;
-            }).OnUpdate(() =>
-            {
-                instance.eslapseTime += Time.deltaTime;
-                instance.statusSuffixIndex = Mathf.Clamp((int)instance.eslapseTime % 3, 0, 2);
+            instance.eslapseTime = 0;
 
-                switch (instance.statusSuffixIndex)
+
+            if (instance._handle.IsActive())
+            {
+                instance._handle.Cancel();
+            }
+
+            instance._handle = LMotion.Create(instance.fillImg.fillAmount, value, time)
+                .WithEase(Ease.Linear)
+                .WithOnComplete(() =>
                 {
-                    case 0:
-                        instance.statusSuffixString = ".";
-                        break;
-                    case 1:
-                        instance.statusSuffixString = "..";
-                        break;
-                    case 2:
-                        instance.statusSuffixString = "...";
-                        break;
-                }
+                    onComplete?.Invoke();
+                })
+                .Bind(instance.fillImg, (i, image) =>
+                {
+                    image.fillAmount = i;
+                    instance.eslapseTime += Time.deltaTime;
+                    instance.statusSuffixIndex = Mathf.Clamp((int)instance.eslapseTime % 3, 0, 2);
 
-                instance.statusTxt.text = instance.statusString + " " + instance.statusSuffixString;
-            });
+                    switch (instance.statusSuffixIndex)
+                    {
+                        case 0:
+                            instance.statusSuffixString = ".";
+                            break;
+                        case 1:
+                            instance.statusSuffixString = "..";
+                            break;
+                        case 2:
+                            instance.statusSuffixString = "...";
+                            break;
+                    }
+
+                    instance.statusTxt.text = instance.statusString + " " + instance.statusSuffixString;
+                });
         }
 
         private static void Hide()
         {
-            instance.fillImg.DOKill();
+            if (instance._handle.IsActive())
+            {
+                instance._handle.Cancel();
+            }
             instance.container.SetActive(false);
             instance.fillImg.fillAmount = 0;
         }

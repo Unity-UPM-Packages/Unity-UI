@@ -2,7 +2,7 @@
     "name": "com.thelegends.unity.ui",
     "rootNamespace": "com.thelegends.unity.ui",
     "references": [
-        "GUID:ca6a523685bd9894d8ba58c9c40c8373"
+        "GUID:3b570a5146f9d4f0fa107ed4559471a3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

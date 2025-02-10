@@ -17,5 +17,18 @@
     "name": "Unity-UPM-Packages",
     "url": "https://github.com/Unity-UPM-Packages"
   },
-  "dependencies": {}
+  "dependencies": {
+    "com.annulusgames.lit-motion": "2.0.1",
+    "com.annulusgames.lit-motion.animation": "2.0.1"
+  },
+  "scopedRegistries": [
+    {
+      "name": "package.openupm.com",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.annulusgames.lit-motion"
+      ]
+    }
+  ]
+  
 }
