@@ -31,6 +31,8 @@ namespace TheLegends.Base.UI
         private int statusSuffixIndex = 0;
         private string statusSuffixString = ".";
 
+        private bool isStart = false;
+
         private MotionHandle _handle;
 
         protected static UILoadingController instance = null;
@@ -67,13 +69,13 @@ namespace TheLegends.Base.UI
 
         private static void FillLoadingProgressBar(float value, float time, Action onComplete = null)
         {
-            instance.eslapseTime = 0;
-
 
             if (instance._handle.IsActive())
             {
                 instance._handle.Cancel();
             }
+
+            instance.isStart = true;
 
             instance._handle = LMotion.Create(instance.fillImg.fillAmount, value, time)
                 .WithEase(Ease.Linear)
@@ -84,27 +86,35 @@ namespace TheLegends.Base.UI
                 .Bind(instance.fillImg, (i, image) =>
                 {
                     image.fillAmount = i;
-                    instance.eslapseTime += Time.deltaTime;
-                    instance.statusSuffixIndex = Mathf.Clamp((int)instance.eslapseTime % 3, 0, 2);
 
-                    switch (instance.statusSuffixIndex)
-                    {
-                        case 0:
-                            instance.statusSuffixString = ".";
-                            break;
-                        case 1:
-                            instance.statusSuffixString = "..";
-                            break;
-                        case 2:
-                            instance.statusSuffixString = "...";
-                            break;
-                    }
-
-                    instance.statusTxt.text = instance.statusString + " " + instance.statusSuffixString;
                 });
         }
 
-        private static void Hide()
+        private void Update()
+        {
+            if (instance.isStart)
+            {
+                instance.eslapseTime += Time.deltaTime;
+                instance.statusSuffixIndex = Mathf.Clamp((int)instance.eslapseTime % 3, 0, 2);
+
+                switch (instance.statusSuffixIndex)
+                {
+                    case 0:
+                        instance.statusSuffixString = ".";
+                        break;
+                    case 1:
+                        instance.statusSuffixString = "..";
+                        break;
+                    case 2:
+                        instance.statusSuffixString = "...";
+                        break;
+                }
+
+                instance.statusTxt.text = instance.statusString + " " + instance.statusSuffixString;
+            }
+        }
+
+        public static void Hide()
         {
             if (instance._handle.IsActive())
             {
@@ -112,6 +122,8 @@ namespace TheLegends.Base.UI
             }
             instance.container.SetActive(false);
             instance.fillImg.fillAmount = 0;
+            instance.isStart = false;
+            instance.eslapseTime = 0;
         }
     }
 }
