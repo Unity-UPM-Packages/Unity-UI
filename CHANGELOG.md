@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.3...v1.0.4) (2025-02-17)
+
+
+### Bug Fixes
+
+* change package.json info ([b00568f](https://github.com/Unity-UPM-Packages/Unity-UI/commit/b00568f07cbbf80bd38b1e5a3d79abf2ec98bca6))
+* update package.json ([3012ef1](https://github.com/Unity-UPM-Packages/Unity-UI/commit/3012ef1dc6341b9ea8e6b068f41697a1e7aa8754))
+* update package.json ([5977424](https://github.com/Unity-UPM-Packages/Unity-UI/commit/59774247bda8cc61def2be23a2acfbee177c6716))
+
 ## [1.0.3](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.2...v1.0.3) (2025-02-12)
 
 
