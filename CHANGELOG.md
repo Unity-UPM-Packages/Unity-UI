@@ -1,3 +1,11 @@
+## [1.0.5](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.4...v1.0.5) (2025-02-19)
+
+
+### Bug Fixes
+
+* add UIToast ([41cbafd](https://github.com/Unity-UPM-Packages/Unity-UI/commit/41cbafdc388d5691e30245b2b49eb14515269219))
+* re-order package structure ([9ff005d](https://github.com/Unity-UPM-Packages/Unity-UI/commit/9ff005d96366dcc2e0ec89c699fc23b94071ccbf))
+
 ## [1.0.4](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.3...v1.0.4) (2025-02-17)
 
 
