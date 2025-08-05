@@ -2,7 +2,7 @@
 
 using NUnit.Framework;
 
-namespace com.thelegends.unity.ui.Tests
+namespace TheLegends.Base.UI.Editor.Tests
 {
     internal class ExampleTestScript
     {

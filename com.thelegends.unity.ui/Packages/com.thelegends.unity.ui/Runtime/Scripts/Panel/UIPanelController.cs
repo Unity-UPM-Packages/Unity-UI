@@ -1,46 +1,82 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace TheLegends.Base.UI
 {
+    /// <summary>
+    /// Panel controller that manages UI panel visibility and animations
+    /// Uses UIAnimationGroup components for show/hide animations
+    /// </summary>
     public class UIPanelController : MonoBehaviour
     {
-        [SerializeField]
-        private string _panelID;
-
+        [Header("Panel Info")]
+        [SerializeField] private string _panelID;
         public string PanelID => _panelID;
 
-        [SerializeField]
-        private List<UIAnimationBase> _showAnimations;
+        [Header("Animation Groups")]
+        [SerializeField] private UIAnimationGroup _showAnimationGroup;
+        [SerializeField] private UIAnimationGroup _hideAnimationGroup;
 
-        [SerializeField]
-        private List<UIAnimationBase> _hideAnimations;
+        [Header("Panel Events")]
+        [SerializeField] private UnityEvent _onPanelShowStart;
+        [SerializeField] private UnityEvent _onPanelShowComplete;
+        [SerializeField] private UnityEvent _onPanelHideStart;
+        [SerializeField] private UnityEvent _onPanelHideComplete;
 
-        [SerializeField]
-        private UnityEvent _onPanelShowStart;
         public UnityEvent OnPanelShowStart => _onPanelShowStart;
-
-        [SerializeField]
-        private UnityEvent _onPanelHideStart;
-        public UnityEvent OnPanelHideStart => _onPanelHideStart;
-
-        [SerializeField]
-        private UnityEvent _onPanelShowComplete;
         public UnityEvent OnPanelShowComplete => _onPanelShowComplete;
-
-        [SerializeField]
-        private UnityEvent _onPanelHideComplete;
+        public UnityEvent OnPanelHideStart => _onPanelHideStart;
         public UnityEvent OnPanelHideComplete => _onPanelHideComplete;
 
         private Canvas _canvas;
-        private int _activeShowAnimations = 0;
-        private int _activeHideAnimations = 0;
+
+        #region Properties
+
+        /// <summary>
+        /// Reference to the show animation group
+        /// </summary>
+        public UIAnimationGroup ShowAnimationGroup => _showAnimationGroup;
+
+        /// <summary>
+        /// Reference to the hide animation group
+        /// </summary>
+        public UIAnimationGroup HideAnimationGroup => _hideAnimationGroup;
+
+        /// <summary>
+        /// Whether the panel is currently showing (has show animations playing)
+        /// </summary>
+        public bool IsShowing => _showAnimationGroup != null && _showAnimationGroup.IsPlaying;
+
+        /// <summary>
+        /// Whether the panel is currently hiding (has hide animations playing)
+        /// </summary>
+        public bool IsHiding => _hideAnimationGroup != null && _hideAnimationGroup.IsPlaying;
+
+        /// <summary>
+        /// Whether any panel animations are currently active
+        /// </summary>
+        public bool HasActiveAnimations => IsShowing || IsHiding;
+
+        #endregion
+
+        #region Unity Lifecycle
 
         protected virtual void Awake()
         {
             _canvas = GetComponent<Canvas>();
+            
+            // ✅ Subscribe to animation group events
+            if (_showAnimationGroup != null)
+            {
+                _showAnimationGroup.OnGroupStart.AddListener(OnShowAnimationStart);
+                _showAnimationGroup.OnGroupComplete.AddListener(OnShowAnimationComplete);
+            }
+
+            if (_hideAnimationGroup != null)
+            {
+                _hideAnimationGroup.OnGroupStart.AddListener(OnHideAnimationStart);
+                _hideAnimationGroup.OnGroupComplete.AddListener(OnHideAnimationComplete);
+            }
         }
 
         protected virtual void OnEnable()
@@ -61,98 +97,180 @@ namespace TheLegends.Base.UI
 
         protected virtual void OnDestroy()
         {
-            // Cleanup any remaining animation listeners
-            CleanupShowAnimationListeners();
-            CleanupHideAnimationListeners();
+            // ✅ Cleanup event subscriptions
+            if (_showAnimationGroup != null)
+            {
+                _showAnimationGroup.OnGroupStart.RemoveListener(OnShowAnimationStart);
+                _showAnimationGroup.OnGroupComplete.RemoveListener(OnShowAnimationComplete);
+            }
+
+            if (_hideAnimationGroup != null)
+            {
+                _hideAnimationGroup.OnGroupComplete.RemoveListener(OnHideAnimationStart);
+                _hideAnimationGroup.OnGroupComplete.RemoveListener(OnHideAnimationComplete);
+            }
         }
 
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Show the panel with animations
+        /// </summary>
         public virtual void Show()
         {
             _canvas.enabled = true;
-            OnPanelShowStart?.Invoke();
-
-            if (_showAnimations == null || _showAnimations.Count == 0)
+            
+            if (_showAnimationGroup != null)
             {
-                OnPanelShowComplete?.Invoke();
-                return;
+                _showAnimationGroup.Play();
             }
-
-            _activeShowAnimations = _showAnimations.Count;
-
-            foreach (var anim in _showAnimations)
+            else
             {
-                // Subscribe to animation completion
-                anim.OnAnimationComplete.AddListener(OnShowAnimationComplete);
-                anim.Play();
+                // ✅ No animation group, fire events immediately
+                OnPanelShowStart?.Invoke();
+                OnPanelShowComplete?.Invoke();
             }
         }
 
+        /// <summary>
+        /// Hide the panel with animations
+        /// </summary>
         public virtual void Hide()
         {
-            OnPanelHideStart?.Invoke();
-
-            if (_hideAnimations == null || _hideAnimations.Count == 0)
+            if (_hideAnimationGroup != null)
             {
+                _hideAnimationGroup.Play();
+            }
+            else
+            {
+                // ✅ No animation group, hide immediately
                 _canvas.enabled = false;
+                OnPanelHideStart?.Invoke();
                 OnPanelHideComplete?.Invoke();
-                return;
             }
+        }
 
-            _activeHideAnimations = _hideAnimations.Count;
-
-            foreach (var anim in _hideAnimations)
+        /// <summary>
+        /// Show the panel immediately without animations
+        /// </summary>
+        public virtual void ShowImmediate()
+        {
+            if (_showAnimationGroup != null)
             {
-                // Subscribe to animation completion
-                anim.OnAnimationComplete.AddListener(OnHideAnimationComplete);
-                anim.Play();
+                _showAnimationGroup.Stop();
             }
+
+            _canvas.enabled = true;
+            OnPanelShowStart?.Invoke();
+            OnPanelShowComplete?.Invoke();
+        }
+
+        /// <summary>
+        /// Hide the panel immediately without animations
+        /// </summary>
+        public virtual void HideImmediate()
+        {
+            if (_hideAnimationGroup != null)
+            {
+                _hideAnimationGroup.Stop();
+            }
+
+            _canvas.enabled = false;
+            OnPanelHideStart?.Invoke();
+            OnPanelHideComplete?.Invoke();
+        }
+
+        /// <summary>
+        /// Stop all panel animations
+        /// </summary>
+        public virtual void StopAllAnimations()
+        {
+            if (_showAnimationGroup != null)
+            {
+                _showAnimationGroup.Stop();
+            }
+
+            if (_hideAnimationGroup != null)
+            {
+                _hideAnimationGroup.Stop();
+            }
+        }
+
+        #endregion
+
+        #region Animation Event Handlers
+
+        private void OnShowAnimationStart()
+        {
+            OnPanelShowStart?.Invoke();
         }
 
         private void OnShowAnimationComplete()
         {
-            _activeShowAnimations--;
-            
-            if (_activeShowAnimations <= 0)
-            {
-                // All show animations completed
-                CleanupShowAnimationListeners();
-                OnPanelShowComplete?.Invoke();
-            }
+            OnPanelShowComplete?.Invoke();
+        }
+
+        private void OnHideAnimationStart()
+        {
+            OnPanelHideStart?.Invoke();
         }
 
         private void OnHideAnimationComplete()
         {
-            _activeHideAnimations--;
-            
-            if (_activeHideAnimations <= 0)
+            _canvas.enabled = false;
+            OnPanelHideComplete?.Invoke();
+        }
+
+        #endregion
+
+        #region Utility Methods
+
+        /// <summary>
+        /// Set the show animation group
+        /// </summary>
+        public void SetShowAnimationGroup(UIAnimationGroup animationGroup)
+        {
+            // ✅ Unsubscribe from old group
+            if (_showAnimationGroup != null)
             {
-                // All hide animations completed
-                CleanupHideAnimationListeners();
-                _canvas.enabled = false;
-                OnPanelHideComplete?.Invoke();
+                _showAnimationGroup.OnGroupStart.RemoveListener(OnShowAnimationStart);
+                _showAnimationGroup.OnGroupComplete.RemoveListener(OnShowAnimationComplete);
+            }
+
+            _showAnimationGroup = animationGroup;
+
+            // ✅ Subscribe to new group
+            if (_showAnimationGroup != null)
+            {
+                _showAnimationGroup.OnGroupStart.AddListener(OnShowAnimationStart);
+                _showAnimationGroup.OnGroupComplete.AddListener(OnShowAnimationComplete);
             }
         }
 
-        private void CleanupShowAnimationListeners()
+        /// <summary>
+        /// Set the hide animation group
+        /// </summary>
+        public void SetHideAnimationGroup(UIAnimationGroup animationGroup)
         {
-            if (_showAnimations != null)
+            // ✅ Unsubscribe from old group
+            if (_hideAnimationGroup != null)
             {
-                foreach (var anim in _showAnimations)
-                {
-                    anim.OnAnimationComplete.RemoveListener(OnShowAnimationComplete);
-                }
+                _hideAnimationGroup.OnGroupStart.RemoveListener(OnHideAnimationStart);
+                _hideAnimationGroup.OnGroupComplete.RemoveListener(OnHideAnimationComplete);
+            }
+
+            _hideAnimationGroup = animationGroup;
+
+            // ✅ Subscribe to new group
+            if (_hideAnimationGroup != null)
+            {
+                _hideAnimationGroup.OnGroupStart.AddListener(OnHideAnimationStart);
+                _hideAnimationGroup.OnGroupComplete.AddListener(OnHideAnimationComplete);
             }
         }
 
-        private void CleanupHideAnimationListeners()
-        {
-            if (_hideAnimations != null)
-            {
-                foreach (var anim in _hideAnimations)
-                {
-                    anim.OnAnimationComplete.RemoveListener(OnHideAnimationComplete);
-                }
-            }
-        }
+        #endregion
     }
 }

@@ -82,6 +82,7 @@ namespace TheLegends.Base.UI
                 .WithOnComplete(() =>
                 {
                     onComplete?.Invoke();
+                    Debug.Log("Loading completed.");
                 })
                 .Bind(instance.fillImg, (i, image) =>
                 {
