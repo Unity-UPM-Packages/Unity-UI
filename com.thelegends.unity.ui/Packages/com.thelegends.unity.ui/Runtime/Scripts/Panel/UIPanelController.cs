@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace TheLegends.Base.UI
 {
+    [RequireComponent(typeof(Canvas))]
+    [RequireComponent(typeof(GraphicRaycaster))]
     /// <summary>
     /// Panel controller that manages UI panel visibility and animations
     /// Uses UIAnimationGroup components for show/hide animations
@@ -64,7 +67,7 @@ namespace TheLegends.Base.UI
         protected virtual void Awake()
         {
             _canvas = GetComponent<Canvas>();
-            
+
             // ✅ Subscribe to animation group events
             if (_showAnimationGroup != null)
             {
@@ -121,7 +124,7 @@ namespace TheLegends.Base.UI
         public virtual void Show()
         {
             _canvas.enabled = true;
-            
+
             if (_showAnimationGroup != null)
             {
                 _showAnimationGroup.Play();
