@@ -17,7 +17,7 @@ namespace TheLegends.Base.UI
         public override void Play()
         {
             ParticleSystem.MainModule mainModule = _particleSystem.main;
-            mainModule.loop = true;
+            mainModule.loop = _loop;
             _particleSystem.Play();
         }
 
