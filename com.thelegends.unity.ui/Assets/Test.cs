@@ -1,17 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using TheLegends.Base.UI;
 using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public void A()
+    public UIAnimationGroup[] uIAnimationGroups;
+
+    void Start()
     {
-        Debug.Log("A");
+        A();
     }
 
-    public void B()
+    public void A()
     {
-        Debug.Log("B");
+        foreach (var group in uIAnimationGroups)
+        {
+            group.Play();
+        }
     }
+
+    public void B(float value)
+    {
+        Debug.Log("value: " + value);
+    }
+    
 }

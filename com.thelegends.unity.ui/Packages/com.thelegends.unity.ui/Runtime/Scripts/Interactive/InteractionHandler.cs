@@ -5,12 +5,16 @@ using UnityEngine.Events;
 
 namespace TheLegends.Base.UI
 {
-    [System.Serializable]
-    public class GameObjectEvent : UnityEvent<GameObject> { }
-    
-    public class InteractionHandler : MonoBehaviour, IInteractionListener
+
+    public class InteractionHandler : MonoBehaviour, IGameObjectInteractionListener, IFloatInteractionListener
     {
-        [SerializeField] private GameObjectEvent onInteractionTriggered;
+        [SerializeField] private UnityEvent<GameObject> onInteractionTriggered;
+        [SerializeField] private UnityEvent<float> onFloatInteractionTriggered;
+
+        public void OnFloatInteractionTriggered(float value)
+        {
+            onFloatInteractionTriggered?.Invoke(value);
+        }
 
         public void OnInteractionTriggered(GameObject source)
         {

@@ -274,6 +274,11 @@ namespace TheLegends.Base.UI
             }
         }
 
+        private void OnValidate()
+        {
+            gameObject.name = string.IsNullOrEmpty(_panelID) ? "UIPanel" : $"UIPanel_{_panelID}";
+        }
+
         #endregion
     }
 }

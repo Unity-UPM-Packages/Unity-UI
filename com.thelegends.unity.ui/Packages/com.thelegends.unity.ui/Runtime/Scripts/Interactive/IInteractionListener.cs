@@ -4,8 +4,13 @@ using UnityEngine;
 
 namespace TheLegends.Base.UI
 {
-    public interface IInteractionListener
+    public interface IGameObjectInteractionListener
     {
         void OnInteractionTriggered(GameObject source);
+    }
+
+    public interface IFloatInteractionListener
+    {
+        void OnFloatInteractionTriggered(float value);
     }
 }
