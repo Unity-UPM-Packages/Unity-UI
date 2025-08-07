@@ -17,7 +17,7 @@ namespace TheLegends.Base.UI
         
         private void OnComplete()
         {
-            litMotionAnimation.Stop();
+            litMotionAnimation.Complete();
         }
 
         void Awake()
