@@ -16,7 +16,7 @@ namespace TheLegends.Base.UI
             {
                 var handle = component.TrackedHandle;
                 handle.TryComplete();
-                component.TrackedHandle = handle;
+                handle.Cancel();
             }
         }
 
