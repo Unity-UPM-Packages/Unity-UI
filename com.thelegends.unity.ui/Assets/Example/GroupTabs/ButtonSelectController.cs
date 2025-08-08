@@ -11,6 +11,7 @@ public class ButtonSelectController : MonoBehaviour
     public Button selectButton;
     public UITrigger trigger;
     public TMP_Text textMesh;
+    public string tabName;
 
     void Awake()
     {

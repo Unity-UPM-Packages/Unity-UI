@@ -11,7 +11,7 @@ public class CountNumberTxtController : MonoBehaviour
     public TMP_Text textMesh;
     public UIAnimationGroup animationGroup;
 
-    void Start()
+    public void StartDoNumber()
     {
         LMotion.Create(0, 1, 1f)
             .WithOnLoopComplete((x) =>
