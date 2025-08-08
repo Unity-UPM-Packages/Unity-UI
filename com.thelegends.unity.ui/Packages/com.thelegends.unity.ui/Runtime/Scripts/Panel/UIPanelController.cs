@@ -87,6 +87,7 @@ namespace TheLegends.Base.UI
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.RegisterPanel(this);
+                _canvas.enabled = false; 
             }
         }
 

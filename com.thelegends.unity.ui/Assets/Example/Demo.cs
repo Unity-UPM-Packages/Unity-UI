@@ -9,16 +9,25 @@ public class Demo : MonoBehaviour
 {
     public Button showShowCaseBtn;
     public Button hideShowCaseBtn;
+    public Button backBtn;
 
     public void OnEnable()
     {
         showShowCaseBtn.onClick.AddListener(OnShowShowCaseClicked);
         hideShowCaseBtn.onClick.AddListener(OnHideShowCaseClicked);
+        backBtn.onClick.AddListener(OnBackClicked);
+    }
+
+    private void OnBackClicked()
+    {
+        UIManager.Instance.HidePanel("Interactive");
+        UIManager.Instance.ShowPanel("ShowCase");
     }
 
     private void OnHideShowCaseClicked()
     {
         UIManager.Instance.HidePanel("ShowCase");
+        UIManager.Instance.ShowPanel("Interactive");
     }
 
     private void OnShowShowCaseClicked()

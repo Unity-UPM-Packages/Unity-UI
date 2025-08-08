@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TheLegends.Base.UI
 {
-    public class UIManager : Singleton<UIManager>
+    public class UIManager : MonoSingleton<UIManager>
     {
 
         private Dictionary<string, UIPanelController> _panelRegistry = new Dictionary<string, UIPanelController>();
