@@ -588,7 +588,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1152685291}
         m_TargetAssemblyTypeName: NewBehaviourScript, Assembly-CSharp
-        m_MethodName: A
+        m_MethodName: ShowLoading
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
