@@ -79,6 +79,7 @@ namespace TheLegends.Base.UI
 
             instance._handle = LMotion.Create(instance.fillImg.fillAmount, value, time)
                 .WithEase(Ease.Linear)
+                .WithScheduler(MotionScheduler.UpdateRealtime)
                 .WithOnComplete(() =>
                 {
                     onComplete?.Invoke();
