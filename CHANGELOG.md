@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.5...v1.0.6) (2025-10-22)
+
+
+### Bug Fixes
+
+* ignore time scale UILoadingController ([7359584](https://github.com/Unity-UPM-Packages/Unity-UI/commit/73595849be6f8f4338c555fe6e4e4fcb7e0727bc))
+
 ## [1.0.5](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.4...v1.0.5) (2025-02-19)
 
 
