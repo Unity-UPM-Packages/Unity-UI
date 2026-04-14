@@ -7,35 +7,27 @@ namespace TheLegends.Base.UI.Editor
     /// Custom Inspector for <see cref="UIMotionBase"/> and all its subclasses.
     /// <para>
     /// Conditional timing fields: when a <see cref="UIMotionPreset"/> is assigned,
-    /// local Duration / Ease / Delay fields are hidden to prevent confusion — the preset values are shown instead.
-    /// When no preset is assigned, local fields are shown for override.
+    /// local Duration / Ease / Delay fields are hidden and replaced by a readable preset summary.
     /// </para>
     /// <para>
-    /// Preview buttons: Edit Mode snaps to From/To values with Undo support.
-    /// Play Mode runs the actual LitMotion tween.
+    /// Subclasses can override <see cref="DrawMotionFields"/> to add custom conditional field logic
+    /// while still inheriting shared timing and preview button behaviour.
     /// </para>
     /// </summary>
     [CustomEditor(typeof(UIMotionBase), true)]
     public class UIMotionBaseEditor : UnityEditor.Editor
     {
-        // Names of serialized fields that are preset-overridable
         private static readonly string[] TimingFieldNames = { "_duration", "_ease", "_delay" };
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-
-            var presetProp = serializedObject.FindProperty("_preset");
-            bool hasPreset = presetProp.objectReferenceValue != null;
-
-            DrawPropertiesWithConditionalTiming(presetProp, hasPreset);
-
+            DrawMotionFields();
             serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space(8f);
             DrawSeparator();
             EditorGUILayout.Space(4f);
-
             EditorGUILayout.LabelField("▶  Motion Preview", EditorStyles.boldLabel);
 
             var motion = (UIMotionBase)target;
@@ -50,7 +42,26 @@ namespace TheLegends.Base.UI.Editor
             }
         }
 
-        private void DrawPropertiesWithConditionalTiming(SerializedProperty presetProp, bool hasPreset)
+        /// <summary>
+        /// Draws the motion component's serialized fields.
+        /// Override in subclasses to add custom conditional field visibility.
+        /// </summary>
+        protected virtual void DrawMotionFields()
+        {
+            var presetProp = serializedObject.FindProperty("_preset");
+            bool hasPreset = presetProp.objectReferenceValue != null;
+
+            DrawPropertiesWithPresetConditional(presetProp, hasPreset);
+        }
+
+        /// <summary>
+        /// Iterates all serialized properties and hides timing fields when a preset is assigned.
+        /// </summary>
+        /// <param name="extraExclusions">
+        /// Optional additional field names to skip during iteration.
+        /// Use in subclass editors to prevent auto-drawing fields that will be drawn manually.
+        /// </param>
+        protected void DrawPropertiesWithPresetConditional(SerializedProperty presetProp, bool hasPreset, string[] extraExclusions = null)
         {
             var iterator = serializedObject.GetIterator();
             bool enterChildren = true;
@@ -59,21 +70,23 @@ namespace TheLegends.Base.UI.Editor
             {
                 enterChildren = false;
 
-                // Always skip the internal script reference field
                 if (iterator.name == "m_Script")
                 {
                     continue;
                 }
 
-                // Skip local timing fields when a preset is in control
                 if (hasPreset && IsTimingField(iterator.name))
+                {
+                    continue;
+                }
+
+                if (IsExcluded(iterator.name, extraExclusions))
                 {
                     continue;
                 }
 
                 EditorGUILayout.PropertyField(iterator, true);
 
-                // When preset changes, re-evaluate and show an info box immediately after the preset field
                 if (iterator.name == "_preset")
                 {
                     hasPreset = presetProp.objectReferenceValue != null;
@@ -90,20 +103,8 @@ namespace TheLegends.Base.UI.Editor
             }
         }
 
-        private static bool IsTimingField(string fieldName)
-        {
-            for (int i = 0; i < TimingFieldNames.Length; i++)
-            {
-                if (TimingFieldNames[i] == fieldName)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private void DrawPlayModeButtons(UIMotionBase motion)
+        /// <summary>Draws the Play Mode test buttons (actual LitMotion tween).</summary>
+        protected void DrawPlayModeButtons(UIMotionBase motion)
         {
             EditorGUILayout.HelpBox(
                 "Play Mode: Runs actual LitMotion tween — previews full animation including easing.",
@@ -156,12 +157,12 @@ namespace TheLegends.Base.UI.Editor
                 EditorGUILayout.LabelField("● Playing...", EditorStyles.boldLabel);
                 GUI.color = prevColor;
 
-                // Trigger repaint so label refreshes while animation is active
                 Repaint();
             }
         }
 
-        private void DrawEditModeButtons(UIMotionBase motion)
+        /// <summary>Draws the Edit Mode snap buttons (instant position only, no tween).</summary>
+        protected void DrawEditModeButtons(UIMotionBase motion)
         {
             EditorGUILayout.HelpBox(
                 "Edit Mode: Instantly snaps to From / To values for quick visual tuning.\n" +
@@ -193,10 +194,42 @@ namespace TheLegends.Base.UI.Editor
             EditorGUILayout.EndHorizontal();
         }
 
-        private static void DrawSeparator()
+        /// <summary>Draws a thin horizontal separator line.</summary>
+        protected static void DrawSeparator()
         {
             var rect = EditorGUILayout.GetControlRect(false, 1f);
             EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.5f));
+        }
+
+        private static bool IsTimingField(string fieldName)
+        {
+            for (int i = 0; i < TimingFieldNames.Length; i++)
+            {
+                if (TimingFieldNames[i] == fieldName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsExcluded(string fieldName, string[] exclusions)
+        {
+            if (exclusions == null)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < exclusions.Length; i++)
+            {
+                if (exclusions[i] == fieldName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
