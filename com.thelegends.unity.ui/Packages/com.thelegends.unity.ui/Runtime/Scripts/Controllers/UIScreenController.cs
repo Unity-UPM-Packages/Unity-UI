@@ -26,9 +26,7 @@ namespace TheLegends.Base.UI
         [Tooltip("How motions execute when hiding the screen.")]
         [SerializeField] private UITransitionMode _hideMode = UITransitionMode.Parallel;
 
-        [Tooltip("If true, the screen starts hidden (all motions reset to start, GameObject deactivated).")]
-        [SerializeField] private bool _hideOnAwake = true;
-
+        private RectTransform _rectTransform;
         private IUIMotion[] _motions;
         private int _completedCount;
 
@@ -48,16 +46,21 @@ namespace TheLegends.Base.UI
         public event Action OnHidden;
 
         /// <summary>
-        /// Collects all motion components and optionally hides the screen on startup.
+        /// Resets position to (0,0), collects motions, and hides the screen on startup.
+        /// This ensures designers can offset screens in the Editor for side-by-side viewing
+        /// without affecting runtime behavior.
         /// </summary>
         protected virtual void Awake()
         {
-            CollectMotions();
+            _rectTransform = GetComponent<RectTransform>();
 
-            if (_hideOnAwake)
+            if (_rectTransform != null)
             {
-                HideImmediate();
+                _rectTransform.anchoredPosition = Vector2.zero;
             }
+
+            CollectMotions();
+            HideImmediate();
         }
 
         /// <inheritdoc/>
