@@ -2,7 +2,8 @@ namespace TheLegends.Base.UI
 {
     /// <summary>
     /// Specifies the direction for <see cref="UISlideMotion"/> enter and exit transitions.
-    /// <see cref="Custom"/> falls back to a manual Vector2 offset value.
+    /// All values produce screen-relative offsets computed from the root Canvas and element dimensions.
+    /// For arbitrary position tweening, use <see cref="UITranslateMotion"/> instead.
     /// </summary>
     public enum SlideDirection
     {
@@ -16,9 +17,6 @@ namespace TheLegends.Base.UI
         Up,
 
         /// <summary>Slides from or to the bottom of the screen.</summary>
-        Down,
-
-        /// <summary>Uses a manually specified Vector2 offset instead of a screen-relative calculation.</summary>
-        Custom
+        Down
     }
 }

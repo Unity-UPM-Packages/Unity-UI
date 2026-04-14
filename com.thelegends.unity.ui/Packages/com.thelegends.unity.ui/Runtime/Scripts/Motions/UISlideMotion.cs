@@ -24,21 +24,12 @@ namespace TheLegends.Base.UI
         [SerializeField] private RectTransform _target;
 
         [Header("Show — Enter")]
-        [Tooltip("Direction the element slides FROM when showing. Custom = use manual offset below.")]
+        [Tooltip("Direction the element slides FROM when showing.")]
         [SerializeField] private SlideDirection _showFrom = SlideDirection.Left;
 
-        [Tooltip("Manual offset applied from the rest position. Only used when Show direction is Custom.")]
-        [SerializeField] private Vector2 _showFromCustomOffset = new Vector2(-500f, 0f);
-
         [Header("Hide — Exit")]
-        [Tooltip("Direction the element slides TO when hiding. Custom = use manual offset below.")]
+        [Tooltip("Direction the element slides TO when hiding.")]
         [SerializeField] private SlideDirection _hideTo = SlideDirection.Right;
-
-        [Tooltip("Manual offset applied from the rest position. Only used when Hide direction is Custom.")]
-        [SerializeField] private Vector2 _hideToCustomOffset = new Vector2(500f, 0f);
-
-        // 10% safety buffer ensures the element clears the screen edge regardless of anchor/pivot setup.
-        private const float OffsetSafetyBuffer = 1.1f;
 
         private RectTransform _canvasRect;
         private Vector2 _restPosition;
@@ -54,13 +45,13 @@ namespace TheLegends.Base.UI
 
             if (!reverse)
             {
-                start = ResolvePosition(_showFrom, _showFromCustomOffset);
+                start = ResolvePosition(_showFrom);
                 end = _restPosition;
             }
             else
             {
                 start = _restPosition;
-                end = ResolvePosition(_hideTo, _hideToCustomOffset);
+                end = ResolvePosition(_hideTo);
             }
 
             return LMotion.Create(start, end, Duration)
@@ -74,7 +65,7 @@ namespace TheLegends.Base.UI
         public override void ResetToStart()
         {
             EnsureInitialized();
-            _target.anchoredPosition = ResolvePosition(_showFrom, _showFromCustomOffset);
+            _target.anchoredPosition = ResolvePosition(_showFrom);
         }
 
         /// <inheritdoc/>
@@ -122,13 +113,8 @@ namespace TheLegends.Base.UI
         /// Screen-relative directions compute an offset from the rest position using
         /// the Canvas and element dimensions to guarantee full off-screen placement.
         /// </summary>
-        private Vector2 ResolvePosition(SlideDirection direction, Vector2 customOffset)
+        private Vector2 ResolvePosition(SlideDirection direction)
         {
-            if (direction == SlideDirection.Custom)
-            {
-                return _restPosition + customOffset;
-            }
-
             if (_canvasRect == null)
             {
                 // Fallback: large offset that works on most mobile resolutions
@@ -141,9 +127,8 @@ namespace TheLegends.Base.UI
             float elementHalfW = _target.rect.width * 0.5f;
             float elementHalfH = _target.rect.height * 0.5f;
 
-            // Buffer ensures element center travels past edge by adding its own half-size
-            float bufferX = (canvasHalfW + elementHalfW) * OffsetSafetyBuffer;
-            float bufferY = (canvasHalfH + elementHalfH) * OffsetSafetyBuffer;
+            float bufferX = canvasHalfW + elementHalfW;
+            float bufferY = canvasHalfH + elementHalfH;
 
             Vector2 delta;
 
