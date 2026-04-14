@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.6...v1.0.7) (2026-04-14)
+
+
+### Bug Fixes
+
+* implement UIMotion ([#1](https://github.com/Unity-UPM-Packages/Unity-UI/issues/1)) ([785a274](https://github.com/Unity-UPM-Packages/Unity-UI/commit/785a27418417ce868384c6273430f2057e4003e0))
+
 ## [1.0.6](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.5...v1.0.6) (2025-10-22)
 
 
