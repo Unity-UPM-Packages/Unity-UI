@@ -2,7 +2,8 @@
     "name": "com.thelegends.unity.ui.Editor",
     "rootNamespace": "com.thelegends.unity.ui.Editor",
     "references": [
-        "com.thelegends.unity.ui"
+        "com.thelegends.unity.ui",
+        "LitMotion"
     ],
     "includePlatforms": [
         "Editor"
