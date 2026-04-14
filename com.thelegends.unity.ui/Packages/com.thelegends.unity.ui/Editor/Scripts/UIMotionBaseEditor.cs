@@ -5,20 +5,32 @@ namespace TheLegends.Base.UI.Editor
 {
     /// <summary>
     /// Custom Inspector for <see cref="UIMotionBase"/> and all its subclasses.
-    /// Adds Preview and Reset buttons that work in both Edit Mode and Play Mode,
-    /// allowing designers to tune From / To / Ease values without entering Play Mode.
     /// <para>
-    /// Edit Mode preview snaps the target component to From or To values directly
-    /// using <see cref="SerializedObject"/> reads, then schedules an undo-safe reset
-    /// when the Inspector is deselected.
+    /// Conditional timing fields: when a <see cref="UIMotionPreset"/> is assigned,
+    /// local Duration / Ease / Delay fields are hidden to prevent confusion — the preset values are shown instead.
+    /// When no preset is assigned, local fields are shown for override.
+    /// </para>
+    /// <para>
+    /// Preview buttons: Edit Mode snaps to From/To values with Undo support.
+    /// Play Mode runs the actual LitMotion tween.
     /// </para>
     /// </summary>
     [CustomEditor(typeof(UIMotionBase), true)]
     public class UIMotionBaseEditor : UnityEditor.Editor
     {
+        // Names of serialized fields that are preset-overridable
+        private static readonly string[] TimingFieldNames = { "_duration", "_ease", "_delay" };
+
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            serializedObject.Update();
+
+            var presetProp = serializedObject.FindProperty("_preset");
+            bool hasPreset = presetProp.objectReferenceValue != null;
+
+            DrawPropertiesWithConditionalTiming(presetProp, hasPreset);
+
+            serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space(8f);
             DrawSeparator();
@@ -36,6 +48,59 @@ namespace TheLegends.Base.UI.Editor
             {
                 DrawEditModeButtons(motion);
             }
+        }
+
+        private void DrawPropertiesWithConditionalTiming(SerializedProperty presetProp, bool hasPreset)
+        {
+            var iterator = serializedObject.GetIterator();
+            bool enterChildren = true;
+
+            while (iterator.NextVisible(enterChildren))
+            {
+                enterChildren = false;
+
+                // Always skip the internal script reference field
+                if (iterator.name == "m_Script")
+                {
+                    continue;
+                }
+
+                // Skip local timing fields when a preset is in control
+                if (hasPreset && IsTimingField(iterator.name))
+                {
+                    continue;
+                }
+
+                EditorGUILayout.PropertyField(iterator, true);
+
+                // When preset changes, re-evaluate and show an info box immediately after the preset field
+                if (iterator.name == "_preset")
+                {
+                    hasPreset = presetProp.objectReferenceValue != null;
+
+                    if (hasPreset)
+                    {
+                        var preset = (UIMotionPreset)presetProp.objectReferenceValue;
+                        EditorGUILayout.HelpBox(
+                            $"Using preset values — Duration: {preset.Duration}s  |  Ease: {preset.Ease}  |  Delay: {preset.Delay}s\n" +
+                            "Remove the preset to override timing locally.",
+                            MessageType.None);
+                    }
+                }
+            }
+        }
+
+        private static bool IsTimingField(string fieldName)
+        {
+            for (int i = 0; i < TimingFieldNames.Length; i++)
+            {
+                if (TimingFieldNames[i] == fieldName)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void DrawPlayModeButtons(UIMotionBase motion)

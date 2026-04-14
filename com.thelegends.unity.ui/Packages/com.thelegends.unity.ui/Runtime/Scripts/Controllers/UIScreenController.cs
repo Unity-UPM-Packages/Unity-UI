@@ -202,7 +202,9 @@ namespace TheLegends.Base.UI
             }
             else
             {
-                ExecuteSequential(reverse, 0, onAllComplete);
+                // Hide Sequential starts from the last motion (LIFO) to naturally mirror the show order.
+                int startIndex = reverse ? _motions.Length - 1 : 0;
+                ExecuteSequential(reverse, startIndex, onAllComplete);
             }
         }
 
@@ -236,13 +238,15 @@ namespace TheLegends.Base.UI
 
         private void ExecuteSequential(bool reverse, int index, Action onAllComplete)
         {
-            if (index >= _motions.Length)
+            bool outOfBounds = reverse ? index < 0 : index >= _motions.Length;
+
+            if (outOfBounds)
             {
                 onAllComplete?.Invoke();
                 return;
             }
 
-            int nextIndex = index + 1;
+            int nextIndex = reverse ? index - 1 : index + 1;
 
             if (reverse)
             {

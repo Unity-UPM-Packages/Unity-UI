@@ -1132,8 +1132,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfc68e178b2a104448c9ec4ef0568a8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _showMode: 0
-  _hideMode: 0
+  _showMode: 1
+  _hideMode: 1
   _hideOnAwake: 1
 --- !u!222 &1395329538
 CanvasRenderer:
