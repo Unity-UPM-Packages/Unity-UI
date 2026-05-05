@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.7...v1.0.8) (2026-05-05)
+
+
+### Bug Fixes
+
+* update README ([763b5a5](https://github.com/Unity-UPM-Packages/Unity-UI/commit/763b5a5073e403e070f6dbc8f61d1b67d7fc095f))
+
 ## [1.0.7](https://github.com/Unity-UPM-Packages/Unity-UI/compare/v1.0.6...v1.0.7) (2026-04-14)
 
 
